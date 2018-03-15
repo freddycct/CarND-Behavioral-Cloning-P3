@@ -16,7 +16,7 @@ from keras.models import load_model, model_from_json
 import h5py
 from keras import __version__ as keras_version
 
-from model import LeNet, nvidia
+from model import nvidia
 import cv2
 
 sio = socketio.Server()
@@ -123,14 +123,9 @@ if __name__ == '__main__':
         print('You are using Keras version ', keras_version,
               ', but the model was built using ', model_version)
 
-    # model = load_model(args.model)
-    # model = LeNet(
-    model = nvidia(
-        (80, 160, 3), 
-        137.28933365733027, 
-        48.18294122773907
-    )
-    model.load_weights('params/model_weights.h5')
+    model = load_model(args.model)
+    # model = nvidia()
+    # model.load_weights(args.model)
 
     if args.image_folder != '':
         print("Creating image folder at {}".format(args.image_folder))
