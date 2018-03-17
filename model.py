@@ -9,7 +9,7 @@ from keras.optimizers import Adam
 from keras.initializers import glorot_normal
 from sklearn.utils import shuffle
 
-def nvidia(dropout=0.0):
+def Nvidia(dropout=0.0):
   model = Sequential()
   model.add(Cropping2D(cropping=((75,25), (0,0)), input_shape=(160,320,3), name='crop'))
   model.add(BatchNormalization()) # 60 x 320 x 3
@@ -86,7 +86,7 @@ def processFilename(filename):
   return filename
 # enddef
 
-def generator(data_set, batch_size):
+def generator(data_set, batch_size, augment=True):
   N = len(data_set)
   while True:
     data_set = shuffle(data_set)
@@ -96,8 +96,6 @@ def generator(data_set, batch_size):
       angles = []
       for row in rows.itertuples():
         angle = row.angle
-
-        augment = True
         
         # for center image
         image = plt.imread( processFilename(row.center) )
@@ -154,7 +152,7 @@ if __name__ == '__main__':
   steps_per_epoch  = np.rint(len(train_set) / batch_size).astype(int)
   validation_steps = np.rint(len(valid_set) / batch_size).astype(int)
     
-  model = nvidia(dropout=0.25)
+  model = Nvidia(dropout=0.25)
   optimizer = Adam(lr=1e-3)
   model.compile(loss='mse', optimizer=optimizer)
 
@@ -165,4 +163,3 @@ if __name__ == '__main__':
   )
 
   model.save('params/model.h5')
-  model.save_weights('params/model_weights.h5')
