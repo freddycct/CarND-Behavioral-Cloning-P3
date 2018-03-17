@@ -1,4 +1,5 @@
 import cv2
+import argparse
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -80,13 +81,13 @@ def Nvidia(dropout=0.0):
   
   return model
 
-def processFilename(filename):
+def processFilename(track, filename):
   filename = filename.split('/')
-  filename = 'data/{}/{}'.format(filename[-2], filename[-1])
+  filename = '{}/{}/{}'.format(track, filename[-2], filename[-1])
   return filename
 # enddef
 
-def generator(data_set, batch_size, augment=True):
+def generator(data_set, batch_size, track, augment=True):
   N = len(data_set)
   while True:
     data_set = shuffle(data_set)
@@ -98,7 +99,7 @@ def generator(data_set, batch_size, augment=True):
         angle = row.angle
         
         # for center image
-        image = plt.imread( processFilename(row.center) )
+        image = plt.imread( processFilename(track, row.center) )
         images.append(image)
         angles.append(angle)
         if augment:
@@ -106,7 +107,7 @@ def generator(data_set, batch_size, augment=True):
           angles.append(-angle)
 
         # for left image
-        image = plt.imread( processFilename(row.left) )
+        image = plt.imread( processFilename(track, row.left) )
         images.append(image)
         angles.append(angle + 0.2)
         if augment:
@@ -114,7 +115,7 @@ def generator(data_set, batch_size, augment=True):
           angles.append(-angle - 0.2)
         
         # for right image
-        image = plt.imread( processFilename(row.right) )
+        image = plt.imread( processFilename(track, row.right) )
         images.append(image)
         angles.append(angle - 0.2)
         if augment:
@@ -131,7 +132,19 @@ def generator(data_set, batch_size, augment=True):
 #end def 
 
 if __name__ == '__main__':
-  driving_log = pd.read_csv('data/driving_log.csv', names=['center','left','right','angle','throttle','brake','speed'])
+    
+  parser = argparse.ArgumentParser(description='Remote Driving')
+  parser.add_argument(
+    'track',
+    type=str,
+    help='Path to track data.'
+  )
+  args = parser.parse_args()
+    
+  driving_log = pd.read_csv(
+      '{}/driving_log.csv'.format(args.track), 
+      names=['center','left','right','angle','throttle','brake','speed']
+  )
   center_left_right_angle = driving_log[['center', 'left', 'right', 'angle']]
   
   np.random.seed(1) # set the random number seed
@@ -145,9 +158,9 @@ if __name__ == '__main__':
   train_set = center_left_right_angle[npts_rand <= 0.8]
   valid_set = center_left_right_angle[npts_rand >  0.8]
   
-  batch_size = 10
-  train_generator = generator(train_set, batch_size)
-  valid_generator = generator(valid_set, batch_size)
+  batch_size = 50
+  train_generator = generator(train_set, batch_size, args.track)
+  valid_generator = generator(valid_set, batch_size, args.track)
 
   steps_per_epoch  = np.rint(len(train_set) / batch_size).astype(int)
   validation_steps = np.rint(len(valid_set) / batch_size).astype(int)
@@ -158,8 +171,8 @@ if __name__ == '__main__':
 
   model.fit_generator(
     train_generator, steps_per_epoch=steps_per_epoch, 
-    epochs=5, 
+    epochs=10, 
     validation_data=valid_generator, validation_steps=validation_steps
   )
 
-  model.save('params/model.h5')
+  model.save('params/{}_model.h5'.format(args.track))
