@@ -182,10 +182,10 @@ if __name__ == '__main__':
   optimizer = Adam(lr=1e-3)
   model.compile(loss='mse', optimizer=optimizer)
 
-  if no_validation:
+  if args.no_validation:
     model.fit_generator(
       train_generator, steps_per_epoch=steps_per_epoch, 
-      epochs=10
+      epochs=20
     )
   else:
     model.fit_generator(
@@ -195,3 +195,5 @@ if __name__ == '__main__':
     )
 
   model.save('params/{}_model.h5'.format(args.track))
+  model.save_weights('params/{}_model_weights.h5'.format(args.track))
+
