@@ -135,44 +135,63 @@ if __name__ == '__main__':
     
   parser = argparse.ArgumentParser(description='Remote Driving')
   parser.add_argument(
-    'track',
+    '--track',
     type=str,
+    default='track1',
     help='Path to track data.'
   )
+  
+  parser.add_argument(
+    '--no-validation', 
+    action="store_true",
+    default=False,
+    help='off validation and use all data for training'
+  )
+
   args = parser.parse_args()
-    
+  print(args)
+
   driving_log = pd.read_csv(
       '{}/driving_log.csv'.format(args.track), 
       names=['center','left','right','angle','throttle','brake','speed']
   )
   center_left_right_angle = driving_log[['center', 'left', 'right', 'angle']]
-  
+
   np.random.seed(1) # set the random number seed
 
-  npts = len(center_left_right_angle)
-
-  # center_left_right_angle contains all the rows
-  # split into training and validation with a 0.8, 0.2 split
-
-  npts_rand = np.random.rand(npts)
-  train_set = center_left_right_angle[npts_rand <= 0.8]
-  valid_set = center_left_right_angle[npts_rand >  0.8]
-  
   batch_size = 50
-  train_generator = generator(train_set, batch_size, args.track)
-  valid_generator = generator(valid_set, batch_size, args.track)
-
-  steps_per_epoch  = np.rint(len(train_set) / batch_size).astype(int)
-  validation_steps = np.rint(len(valid_set) / batch_size).astype(int)
+  if args.no_validation:
+    # center_left_right_angle contains all the rows
+    train_set = center_left_right_angle 
+  else:
+    npts = len(center_left_right_angle)
+    # split into training and validation with a 0.8, 0.2 split
     
+    npts_rand = np.random.rand(npts)
+    train_set = center_left_right_angle[npts_rand <= 0.8]
+    valid_set = center_left_right_angle[npts_rand >  0.8]
+    
+    valid_generator = generator(valid_set, batch_size, args.track)
+    validation_steps = np.rint(len(valid_set) / batch_size).astype(int)
+  # endif
+
+  train_generator = generator(train_set, batch_size, args.track)
+  steps_per_epoch  = np.rint(len(train_set) / batch_size).astype(int)
+  
   model = Nvidia(dropout=0.25)
   optimizer = Adam(lr=1e-3)
   model.compile(loss='mse', optimizer=optimizer)
 
-  model.fit_generator(
-    train_generator, steps_per_epoch=steps_per_epoch, 
-    epochs=10, 
-    validation_data=valid_generator, validation_steps=validation_steps
-  )
+  if no_validation:
+    model.fit_generator(
+      train_generator, steps_per_epoch=steps_per_epoch, 
+      epochs=10
+    )
+  else:
+    model.fit_generator(
+      train_generator, steps_per_epoch=steps_per_epoch, 
+      epochs=10, 
+      validation_data=valid_generator, validation_steps=validation_steps
+    )
 
   model.save('params/{}_model.h5'.format(args.track))
