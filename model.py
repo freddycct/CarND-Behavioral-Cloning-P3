@@ -195,5 +195,4 @@ if __name__ == '__main__':
     )
 
   model.save('params/{}_model.h5'.format(args.track))
-  model.save_weights('params/{}_model_weights.h5'.format(args.track))
-
+  # model.save_weights('params/{}_model_weights.h5'.format(args.track))
