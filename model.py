@@ -14,9 +14,11 @@ def Nvidia_small(dropout=0.0):
   model = Sequential()
   model.add(Cropping2D(cropping=((75,25), (0,0)), input_shape=(160,320,3), name='crop'))
   model.add(BatchNormalization()) # 60 x 320 x 3
-  
+
+  # 6,12,20,26,32 
+ 
   model.add(Conv2D(
-    6, 5, strides=(1,2), padding='valid', 
+    4, 5, strides=(1,2), padding='valid', 
     kernel_initializer=glorot_normal(seed=1), bias_initializer='zeros',
     name='conv1'
   )) 
@@ -25,7 +27,7 @@ def Nvidia_small(dropout=0.0):
   model.add(Dropout(dropout))
   
   model.add(Conv2D(
-    12, 5, strides=(1,2), padding='valid',
+    4, 5, strides=(1,2), padding='valid',
     kernel_initializer=glorot_normal(seed=1), bias_initializer='zeros',
     name='conv2'
   )) 
@@ -34,7 +36,7 @@ def Nvidia_small(dropout=0.0):
   model.add(Dropout(dropout))
   
   model.add(Conv2D(
-    20, 5, strides=1, padding='valid',
+    4, 5, strides=1, padding='valid',
     kernel_initializer=glorot_normal(seed=1), bias_initializer='zeros',
     name='conv3'
   )) 
@@ -43,7 +45,7 @@ def Nvidia_small(dropout=0.0):
   model.add(Dropout(dropout))
   
   model.add(Conv2D(
-    26, 3, padding='valid',
+    6, 3, padding='valid',
     kernel_initializer=glorot_normal(seed=1), bias_initializer='zeros',
     name='conv4'
   ))
@@ -52,7 +54,7 @@ def Nvidia_small(dropout=0.0):
   model.add(Dropout(dropout))
   
   model.add(Conv2D(
-    32, 3, padding='valid',
+    8, 3, padding='valid',
     kernel_initializer=glorot_normal(seed=1), bias_initializer='zeros',
     name='conv5'
   ))
@@ -67,10 +69,10 @@ def Nvidia_small(dropout=0.0):
   model.add(Activation('relu'))
   model.add(Dropout(dropout))
   
-  model.add(Dense(50, kernel_initializer=glorot_normal(seed=1), bias_initializer='zeros'))
-  model.add(BatchNormalization())
-  model.add(Activation('relu'))
-  model.add(Dropout(dropout))
+  #model.add(Dense(50, kernel_initializer=glorot_normal(seed=1), bias_initializer='zeros'))
+  #model.add(BatchNormalization())
+  #model.add(Activation('relu'))
+  #model.add(Dropout(dropout))
   
   model.add(Dense(10, kernel_initializer=glorot_normal(seed=1), bias_initializer='zeros'))
   model.add(BatchNormalization())
@@ -208,21 +210,21 @@ if __name__ == '__main__':
   parser.add_argument(
     '--track',
     type=str,
-    default='track1',
-    help='Path to track data.'
+    default='all_data',
+    help='Path to track data. (default: all_data)'
   )
   
   parser.add_argument(
     '--no-validation', 
     action="store_true",
     default=False,
-    help='off validation and use all data for training'
+    help='off validation and use all data for training. (default: False)'
   )
 
   parser.add_argument(
     '--model-params',
     type=str,
-    help='Path to previous trained model'
+    help='Path to previous trained model. (default: None)'
   )
 
   args = parser.parse_args()
@@ -266,12 +268,12 @@ if __name__ == '__main__':
   if args.no_validation:
     model.fit_generator(
       train_generator, steps_per_epoch=steps_per_epoch, 
-      epochs=20
+      epochs=40
     )
   else:
     model.fit_generator(
       train_generator, steps_per_epoch=steps_per_epoch, 
-      epochs=20, 
+      epochs=40, 
       validation_data=valid_generator, validation_steps=validation_steps
     )
 
