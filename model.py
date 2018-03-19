@@ -15,11 +15,13 @@ def Nvidia_small(dropout=0.0):
   model.add(Cropping2D(cropping=((75,25), (0,0)), input_shape=(160,320,3), name='crop'))
   model.add(BatchNormalization()) # 60 x 320 x 3
 
+  xavier_initializer = glorot_normal(seed=1)
+
   # 6,12,20,26,32 
  
   model.add(Conv2D(
     4, 5, strides=(1,2), padding='valid', 
-    kernel_initializer=glorot_normal(seed=1), bias_initializer='zeros',
+    kernel_initializer=xavier_initializer, bias_initializer='zeros',
     name='conv1'
   )) 
   model.add(BatchNormalization())
@@ -28,7 +30,7 @@ def Nvidia_small(dropout=0.0):
   
   model.add(Conv2D(
     4, 5, strides=(1,2), padding='valid',
-    kernel_initializer=glorot_normal(seed=1), bias_initializer='zeros',
+    kernel_initializer=xavier_initializer, bias_initializer='zeros',
     name='conv2'
   )) 
   model.add(BatchNormalization())
@@ -37,7 +39,7 @@ def Nvidia_small(dropout=0.0):
   
   model.add(Conv2D(
     4, 5, strides=1, padding='valid',
-    kernel_initializer=glorot_normal(seed=1), bias_initializer='zeros',
+    kernel_initializer=xavier_initializer, bias_initializer='zeros',
     name='conv3'
   )) 
   model.add(BatchNormalization())
@@ -46,7 +48,7 @@ def Nvidia_small(dropout=0.0):
   
   model.add(Conv2D(
     6, 3, padding='valid',
-    kernel_initializer=glorot_normal(seed=1), bias_initializer='zeros',
+    kernel_initializer=xavier_initializer, bias_initializer='zeros',
     name='conv4'
   ))
   model.add(BatchNormalization())
@@ -55,7 +57,7 @@ def Nvidia_small(dropout=0.0):
   
   model.add(Conv2D(
     8, 3, padding='valid',
-    kernel_initializer=glorot_normal(seed=1), bias_initializer='zeros',
+    kernel_initializer=xavier_initializer, bias_initializer='zeros',
     name='conv5'
   ))
   model.add(BatchNormalization())
@@ -64,22 +66,22 @@ def Nvidia_small(dropout=0.0):
   
   model.add(Flatten())
 
-  model.add(Dense(100, kernel_initializer=glorot_normal(seed=1), bias_initializer='zeros'))
+  model.add(Dense(100, kernel_initializer=xavier_initializer, bias_initializer='zeros'))
   model.add(BatchNormalization())
   model.add(Activation('relu'))
   model.add(Dropout(dropout))
   
-  #model.add(Dense(50, kernel_initializer=glorot_normal(seed=1), bias_initializer='zeros'))
+  #model.add(Dense(50, kernel_initializer=xavier_initializer, bias_initializer='zeros'))
   #model.add(BatchNormalization())
   #model.add(Activation('relu'))
   #model.add(Dropout(dropout))
   
-  model.add(Dense(10, kernel_initializer=glorot_normal(seed=1), bias_initializer='zeros'))
+  model.add(Dense(10, kernel_initializer=xavier_initializer, bias_initializer='zeros'))
   model.add(BatchNormalization())
   model.add(Activation('relu'))
   model.add(Dropout(dropout))
   
-  model.add(Dense(1, kernel_initializer=glorot_normal(seed=1), bias_initializer='zeros'))
+  model.add(Dense(1, kernel_initializer=xavier_initializer, bias_initializer='zeros'))
   
   return model
 
@@ -88,9 +90,11 @@ def Nvidia(dropout=0.0):
   model.add(Cropping2D(cropping=((75,25), (0,0)), input_shape=(160,320,3), name='crop'))
   model.add(BatchNormalization()) # 60 x 320 x 3
   
+  xavier_initializer = glorot_normal(seed=1)
+  
   model.add(Conv2D(
     24, 5, strides=(1,2), padding='valid', 
-    kernel_initializer=glorot_normal(seed=1), bias_initializer='zeros',
+    kernel_initializer=xavier_initializer, bias_initializer='zeros',
     name='conv1'
   )) 
   model.add(BatchNormalization())
@@ -99,7 +103,7 @@ def Nvidia(dropout=0.0):
   
   model.add(Conv2D(
     36, 5, strides=(1,2), padding='valid',
-    kernel_initializer=glorot_normal(seed=1), bias_initializer='zeros',
+    kernel_initializer=xavier_initializer, bias_initializer='zeros',
     name='conv2'
   )) 
   model.add(BatchNormalization())
@@ -108,7 +112,7 @@ def Nvidia(dropout=0.0):
   
   model.add(Conv2D(
     48, 5, strides=1, padding='valid',
-    kernel_initializer=glorot_normal(seed=1), bias_initializer='zeros',
+    kernel_initializer=xavier_initializer, bias_initializer='zeros',
     name='conv3'
   )) 
   model.add(BatchNormalization())
@@ -117,7 +121,7 @@ def Nvidia(dropout=0.0):
   
   model.add(Conv2D(
     64, 3, padding='valid',
-    kernel_initializer=glorot_normal(seed=1), bias_initializer='zeros',
+    kernel_initializer=xavier_initializer, bias_initializer='zeros',
     name='conv4'
   ))
   model.add(BatchNormalization())
@@ -126,7 +130,7 @@ def Nvidia(dropout=0.0):
   
   model.add(Conv2D(
     64, 3, padding='valid',
-    kernel_initializer=glorot_normal(seed=1), bias_initializer='zeros',
+    kernel_initializer=xavier_initializer, bias_initializer='zeros',
     name='conv5'
   ))
   model.add(BatchNormalization())
@@ -135,22 +139,22 @@ def Nvidia(dropout=0.0):
   
   model.add(Flatten())
 
-  model.add(Dense(100, kernel_initializer=glorot_normal(seed=1), bias_initializer='zeros'))
+  model.add(Dense(100, kernel_initializer=xavier_initializer, bias_initializer='zeros'))
   model.add(BatchNormalization())
   model.add(Activation('relu'))
   model.add(Dropout(dropout))
   
-  model.add(Dense(50, kernel_initializer=glorot_normal(seed=1), bias_initializer='zeros'))
+  model.add(Dense(50, kernel_initializer=xavier_initializer, bias_initializer='zeros'))
   model.add(BatchNormalization())
   model.add(Activation('relu'))
   model.add(Dropout(dropout))
   
-  model.add(Dense(10, kernel_initializer=glorot_normal(seed=1), bias_initializer='zeros'))
+  model.add(Dense(10, kernel_initializer=xavier_initializer, bias_initializer='zeros'))
   model.add(BatchNormalization())
   model.add(Activation('relu'))
   model.add(Dropout(dropout))
   
-  model.add(Dense(1, kernel_initializer=glorot_normal(seed=1), bias_initializer='zeros'))
+  model.add(Dense(1, kernel_initializer=xavier_initializer, bias_initializer='zeros'))
   
   return model
 
