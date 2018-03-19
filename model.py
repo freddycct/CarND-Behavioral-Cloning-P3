@@ -16,7 +16,7 @@ def Nvidia_small(dropout=0.0):
   model.add(BatchNormalization()) # 60 x 320 x 3
   
   model.add(Conv2D(
-    6, 5, strides=(2,2), padding='same', 
+    6, 5, strides=(1,2), padding='valid', 
     kernel_initializer=glorot_normal(seed=1), bias_initializer='zeros',
     name='conv1'
   )) 
@@ -25,7 +25,7 @@ def Nvidia_small(dropout=0.0):
   model.add(Dropout(dropout))
   
   model.add(Conv2D(
-    12, 5, strides=(1,2), padding='same',
+    12, 5, strides=(1,2), padding='valid',
     kernel_initializer=glorot_normal(seed=1), bias_initializer='zeros',
     name='conv2'
   )) 
@@ -34,16 +34,16 @@ def Nvidia_small(dropout=0.0):
   model.add(Dropout(dropout))
   
   model.add(Conv2D(
-    16, 5, strides=(1,2), padding='same',
+    20, 5, strides=1, padding='valid',
     kernel_initializer=glorot_normal(seed=1), bias_initializer='zeros',
     name='conv3'
-  ))
+  )) 
   model.add(BatchNormalization())
   model.add(Activation('relu'))
   model.add(Dropout(dropout))
   
   model.add(Conv2D(
-    20, 3, padding='valid',
+    26, 3, padding='valid',
     kernel_initializer=glorot_normal(seed=1), bias_initializer='zeros',
     name='conv4'
   ))
@@ -52,7 +52,7 @@ def Nvidia_small(dropout=0.0):
   model.add(Dropout(dropout))
   
   model.add(Conv2D(
-    24, 3, padding='valid',
+    32, 3, padding='valid',
     kernel_initializer=glorot_normal(seed=1), bias_initializer='zeros',
     name='conv5'
   ))
