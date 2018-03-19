@@ -71,11 +71,6 @@ def Nvidia_small(dropout=0.0):
   model.add(Activation('relu'))
   model.add(Dropout(dropout))
   
-  #model.add(Dense(50, kernel_initializer=xavier_initializer, bias_initializer='zeros'))
-  #model.add(BatchNormalization())
-  #model.add(Activation('relu'))
-  #model.add(Dropout(dropout))
-  
   model.add(Dense(10, kernel_initializer=xavier_initializer, bias_initializer='zeros'))
   model.add(BatchNormalization())
   model.add(Activation('relu'))
@@ -231,6 +226,20 @@ if __name__ == '__main__':
     help='Path to previous trained model. (default: None)'
   )
 
+  parser.add_argument(
+    '--batch-size',
+    type=int,
+    default=50,
+    help='Batch size. (default: 50)'
+  )
+
+  parser.add_argument(
+    '--epochs',
+    type=int,
+    default=40,
+    help='Number of epochs. (default: 40)'
+  )
+
   args = parser.parse_args()
   print(args)
 
@@ -242,7 +251,6 @@ if __name__ == '__main__':
 
   np.random.seed(1) # set the random number seed
 
-  batch_size = 50
   if args.no_validation:
     # center_left_right_angle contains all the rows
     train_set = center_left_right_angle 
@@ -254,12 +262,12 @@ if __name__ == '__main__':
     train_set = center_left_right_angle[npts_rand <= 0.8]
     valid_set = center_left_right_angle[npts_rand >  0.8]
     
-    valid_generator = generator(valid_set, batch_size, args.track)
-    validation_steps = np.rint(len(valid_set) / batch_size).astype(int)
+    valid_generator = generator(valid_set, args.batch_size, args.track)
+    validation_steps = np.rint(len(valid_set) / args.batch_size).astype(int)
   # endif
 
-  train_generator = generator(train_set, batch_size, args.track)
-  steps_per_epoch  = np.rint(len(train_set) / batch_size).astype(int)
+  train_generator = generator(train_set, args.batch_size, args.track)
+  steps_per_epoch  = np.rint(len(train_set) / args.batch_size).astype(int)
   
   if args.model_params is None:
     model = Nvidia_small(dropout=0.25)
@@ -271,14 +279,17 @@ if __name__ == '__main__':
 
   if args.no_validation:
     model.fit_generator(
-      train_generator, steps_per_epoch=steps_per_epoch, 
-      epochs=40
+      train_generator, 
+      steps_per_epoch=steps_per_epoch, 
+      epochs=args.epochs
     )
   else:
     model.fit_generator(
-      train_generator, steps_per_epoch=steps_per_epoch, 
-      epochs=40, 
-      validation_data=valid_generator, validation_steps=validation_steps
+      train_generator, 
+      steps_per_epoch=steps_per_epoch, 
+      epochs=args.epochs, 
+      validation_data=valid_generator, 
+      validation_steps=validation_steps
     )
 
   model.save('params/{}_model.h5'.format(args.track))
