@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from keras.models import Sequential, Model
+from keras.models import Sequential, Model, load_model
 from keras.layers import Flatten, Dense, Conv2D, MaxPooling2D, BatchNormalization, Cropping2D, Lambda, Activation, Dropout
 from keras.optimizers import Adam
 from keras.initializers import glorot_normal
@@ -219,6 +219,12 @@ if __name__ == '__main__':
     help='off validation and use all data for training'
   )
 
+  parser.add_argument(
+    '--model-params',
+    type=str,
+    help='Path to previous trained model'
+  )
+
   args = parser.parse_args()
   print(args)
 
@@ -249,7 +255,11 @@ if __name__ == '__main__':
   train_generator = generator(train_set, batch_size, args.track)
   steps_per_epoch  = np.rint(len(train_set) / batch_size).astype(int)
   
-  model = Nvidia_small(dropout=0.25)
+  if args.model_params is None:
+    model = Nvidia_small(dropout=0.25)
+  else:
+    model = load_model(args.model_params)
+  # end if
   optimizer = Adam(lr=1e-3)
   model.compile(loss='mse', optimizer=optimizer)
 
