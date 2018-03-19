@@ -190,7 +190,7 @@ if __name__ == '__main__':
   else:
     model.fit_generator(
       train_generator, steps_per_epoch=steps_per_epoch, 
-      epochs=10, 
+      epochs=20, 
       validation_data=valid_generator, validation_steps=validation_steps
     )
 
