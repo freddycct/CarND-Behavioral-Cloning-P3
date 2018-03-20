@@ -71,6 +71,11 @@ def Nvidia_small(dropout=0.0):
   model.add(Activation('relu'))
   model.add(Dropout(dropout))
   
+  model.add(Dense(50, kernel_initializer=xavier_initializer, bias_initializer='zeros'))
+  model.add(BatchNormalization())
+  model.add(Activation('relu'))
+  model.add(Dropout(dropout))
+
   model.add(Dense(10, kernel_initializer=xavier_initializer, bias_initializer='zeros'))
   model.add(BatchNormalization())
   model.add(Activation('relu'))
@@ -240,6 +245,13 @@ if __name__ == '__main__':
     help='Number of epochs. (default: 40)'
   )
 
+  parser.add_argument(
+    '--lr',
+    type=float,
+    default=1e-3,
+    help='Learning rate. (default: 1e-3)'
+  )
+
   args = parser.parse_args()
   print(args)
 
@@ -274,7 +286,7 @@ if __name__ == '__main__':
   else:
     model = load_model(args.model_params)
   # end if
-  optimizer = Adam(lr=1e-3)
+  optimizer = Adam(lr=args.lr)
   model.compile(loss='mse', optimizer=optimizer)
 
   if args.no_validation:
