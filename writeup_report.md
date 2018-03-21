@@ -42,6 +42,10 @@ The model.py file contains the code for training and saving the convolution neur
 
 #### 1. An appropriate model architecture has been employed
 
+My first step was to use a convolution neural network model similar to the Nvidia end-to-end self driving paper. I thought this model might be appropriate because the architecture appeared in a published paper that Nvidia claims they are using for their self-driving car.
+
+The Nvidia architecture worked right from the start. The problem I had was that the resulting model.h5 file was very big. So I tried to reduce the architecture size by reducing the number of filters and using a larger stride size for the width. A large stride size reduces the resolution of the image very quickly and allow us to have lesser number of parameters when we reach the densely connected layers.
+
 My model consists of a convolution neural network with the following architecture.
 
 0. Preprocessing
@@ -94,7 +98,9 @@ My model consists of a convolution neural network with the following architectur
 
 #### 2. Attempts to reduce overfitting in the model
 
-The model contains dropout layers in order to reduce overfitting. During training, 20% of the data was held out for validation during training. The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
+The model contains dropout layers in order to reduce overfitting. During training, 20% of the data was held out for validation during training. I made sure the validation error reduces to less than 0.02 error.
+
+The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
 
 #### 3. Model parameter tuning
 
@@ -105,19 +111,3 @@ The model used an adam optimizer, so the learning rate was 0.001
 The model was trained and validated on track 1 and track 2 data sets to ensure that the model was not overfitting. I augmented the image data set by mirroring every image, including the left and right camera images. The required angles are taken as the negation of the original angle.
 
 For track 1, I drove the car in the opposite direction to collect data for steering right.
-
-### Model Architecture and Training Strategy
-
-#### 1. Solution Design Approach
-
-The overall strategy for deriving a model architecture are as follows,
-
-My first step was to use a convolution neural network model similar to the Nvidia end-to-end self driving paper. I thought this model might be appropriate because the architecture appeared in a published paper that Nvidia claims they are using for their self-driving car.
-
-In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set. Then look at the error on the validation set while training on the training set.
-
-#### 2. Final Model Architecture
-
-Refer to earlier description. The Nvidia architecture worked right from the start. The problem I had was that the resulting model.h5 file was very big. So I tried to reduce the architecture size by reducing the number of filters and using a larger stride size for the width. A large stride size reduces the resolution of the image very quickly and allow us to have lesser number of parameters when we reach the densely connected layers.
-
-
