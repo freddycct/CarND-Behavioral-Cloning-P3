@@ -44,7 +44,9 @@ The model.py file contains the code for training and saving the convolution neur
 
 My first step was to use a convolution neural network model similar to the Nvidia end-to-end self driving paper. I thought this model might be appropriate because the architecture appeared in a published paper that Nvidia claims they are using for their self-driving car.
 
-The Nvidia architecture worked right from the start. The problem I had was that the resulting model.h5 file was very big. So I tried to reduce the architecture size by reducing the number of filters and using a larger stride size for the width. A large stride size reduces the resolution of the image very quickly and allow us to have lesser number of parameters when we reach the densely connected layers.
+The Nvidia architecture worked right from the start for both track1 + track2. The problem I had was that the resulting model.h5 file was very big. So I tried to reduce the architecture size by reducing the number of filters and using a larger stride size for the width. A large stride size reduces the resolution of the image very quickly and allow us to have lesser number of parameters when we reach the densely connected layers. I spent most of my time trying to reduce the size of the model.h5. I managed to reduce it from 100mb down to 30mb. 
+
+I did obtain some model.h5 that were 6mb - 15mb, but it either work in track 1 and failed in track 2, or worked in track 2 and failed in track 1.
 
 My model consists of a convolution neural network with the following architecture.
 
