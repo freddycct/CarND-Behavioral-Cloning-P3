@@ -16,8 +16,6 @@ def Nvidia_small(dropout=0.0):
   model.add(BatchNormalization()) # 60 x 320 x 3
 
   xavier_initializer = glorot_normal(seed=1)
-
-  # 6,12,20,26,32 
  
   model.add(Conv2D(
     4, 5, strides=(1,2), padding='valid', 
@@ -255,14 +253,17 @@ if __name__ == '__main__':
   args = parser.parse_args()
   print(args)
 
+  # read the driving_log.csv file
   driving_log = pd.read_csv(
       '{}/driving_log.csv'.format(args.track), 
       names=['center','left','right','angle','throttle','brake','speed']
   )
+  # only retain the required columns
   center_left_right_angle = driving_log[['center', 'left', 'right', 'angle']]
 
   np.random.seed(1) # set the random number seed
 
+  # no validation is to test whether we can fit to the training set
   if args.no_validation:
     # center_left_right_angle contains all the rows
     train_set = center_left_right_angle 
@@ -282,8 +283,10 @@ if __name__ == '__main__':
   steps_per_epoch  = np.rint(len(train_set) / args.batch_size).astype(int)
   
   if args.model_params is None:
+    # use the architecture that generates smaller parameters file
     model = Nvidia_small(dropout=0.25)
   else:
+    # if parameters file is provided, load it and resume training from there
     model = load_model(args.model_params)
   # end if
   optimizer = Adam(lr=args.lr)
